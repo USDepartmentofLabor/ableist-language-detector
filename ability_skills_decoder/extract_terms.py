@@ -80,6 +80,23 @@ def get_skills(df: pd.DataFrame) -> pd.DataFrame:
 def get_representative_terms(
     abilities_corpus: Iterable[str], skills_corpus: Iterable[str]
 ) -> Tuple[list, list]:
+    """Return representative terms in order of importance from the abilities and skills
+    corpora.
+
+
+    Parameters
+    ----------
+    abilities_corpus : Iterable[str]
+        Iterable containing the ability descriptions
+    skills_corpus : Iterable[str]
+        Iterable containing the skills descriptions
+
+    Returns
+    -------
+    Tuple[list, list]
+        The first element is a list of abilities terms and the second element is a list
+        of skills terms
+    """
     # Intialize empty lists to store all the verbs extracted from the docs
     abilities_verbs = []
     skills_verbs = []

@@ -5,7 +5,7 @@ Tool to evaluate job postings for ability <> skills bias
 
 Clone the repo and install the package in edit mode (preferably in a virtual environment).
 ```
-git@github.com:inclusive-ai/ability-skills-decoder.git
+git clone git@github.com:inclusive-ai/ability-skills-decoder.git
 cd ability-skills-decoder
 pip install -e .
 ```
