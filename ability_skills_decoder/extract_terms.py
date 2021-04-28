@@ -26,8 +26,55 @@ def get_verbs(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
     """
     # TODO: Consider retuning the token instead, which contains the raw text as well
     # as the lemma
-    verbs = [token.lemma_ for token in spacy_doc if token.pos_ == "VERB"]
+    verbs = [
+        token.lemma_
+        for token in spacy_doc
+        if token.pos_ == "VERB"
+        and token.dep_ not in {"aux", "auxpass", "neg"}  # remove auxiliary verbs
+    ]
     return verbs
+
+
+def get_objects(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
+    """Return a list of noun objects within a given document.
+
+    Parameters
+    ----------
+    spacy_doc : spacy.tokens.Doc
+        spaCy document to parse
+
+    Returns
+    -------
+    List[spacy.tokens.Token]
+        List of noun objects within the document
+    """
+    # TODO: Consider retuning the token instead, which contains the raw text as well
+    # as the lemma
+    noun_objects = [
+        token.lemma_
+        for token in spacy_doc
+        if token.pos_ == "NOUN" and token.dep_ == "dobj"  # direct object dependency tag
+    ]
+    return noun_objects
+
+
+def get_nouns(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
+    """Return a list of nouns within a given document.
+
+    Parameters
+    ----------
+    spacy_doc : spacy.tokens.Doc
+        spaCy document to parse
+
+    Returns
+    -------
+    List[spacy.tokens.Token]
+        List of nouns within the document
+    """
+    # TODO: Consider retuning the token instead, which contains the raw text as well
+    # as the lemma
+    nouns = [token.lemma_ for token in spacy_doc if token.pos_ == "NOUN"]
+    return nouns
 
 
 def get_abilities(df: pd.DataFrame) -> pd.DataFrame:
@@ -129,6 +176,46 @@ def get_representative_terms(
     return unique_abilities_verbs, unique_skills_verbs
 
 
+def get_objects_corpus(corpus: Iterable[str]) -> list:
+    """Return a list of all noun objects in a given corpus.
+
+    Parameters
+    ----------
+    corpus : Iterable[str]
+        Iterable containing individual documents (in this case, skill/ability
+        descriptions)
+
+    Returns
+    -------
+    list
+        List of unique noun objects
+    """
+    noun_objects = []
+    for doc in nlp.pipe(corpus):
+        noun_objects.extend(get_objects(doc))
+    return list(set(noun_objects))
+
+
+def get_nouns_corpus(corpus: Iterable[str]) -> list:
+    """Return a list of all nouns in a given corpus.
+
+    Parameters
+    ----------
+    corpus : Iterable[str]
+        Iterable containing individual documents (in this case, skill/ability
+        descriptions)
+
+    Returns
+    -------
+    list
+        List of unique nouns
+    """
+    nouns = []
+    for doc in nlp.pipe(corpus):
+        nouns.extend(get_nouns(doc))
+    return list(set(nouns))
+
+
 @click.command()
 @click.option(
     "--data_path",
@@ -162,11 +249,24 @@ def main(data_path, output_dir):
         abilities_df.Description, skills_df.Description
     )
 
+    # goal is to retrieve nouns that reference physical (e.g. body parts) or
+    # sensory/cognitive abilities that may be ableist. These would all be verb ojects
+    # in usage (e.g. move your hand), but looking only for objects was returning
+    # limited results, so we'll also look for nouns and then manually curate them later.
+    noun_objects = get_objects_corpus(abilities_df.Description)
+    nouns = get_nouns_corpus(abilities_df.Description)
+
     with open(output_path / "abilities_verbs.txt", "w") as abilities_out:
         abilities_out.writelines([f"{v}\n" for v in unique_abilities_verbs])
 
     with open(output_path / "skills_verbs.txt", "w") as skills_out:
         skills_out.writelines([f"{v}\n" for v in unique_skills_verbs])
+
+    with open(output_path / "abilities_noun_objects.txt", "w") as abilities_objects_out:
+        abilities_objects_out.writelines([f"{v}\n" for v in noun_objects])
+
+    with open(output_path / "abilities_nouns.txt", "w") as abilities_nouns_out:
+        abilities_nouns_out.writelines([f"{v}\n" for v in nouns])
 
 
 if __name__ == "__main__":
