@@ -1,12 +1,14 @@
 """Main module for identifying ableist language in job descriptions."""
 
 from typing import Iterable, List, Union
+
 import click
 import spacy
+
 from ability_skills_decoder import utils
 from ability_skills_decoder.ableist_word_list import (
-    ABLEIST_VERBS,
     ABLEIST_OBJECTS,
+    ABLEIST_VERBS,
     ABLEIST_VERBS_OBJECT_DEPENDENT,
 )
 
@@ -17,7 +19,7 @@ def match_dependent_ableist_verbs(
     spacy_doc: spacy.tokens.Doc,
     ableist_verbs_object_dependent: Iterable[str],
     ableist_objects: Iterable[str],
-) -> Iterable[spacy.tokens.Span]:
+) -> List[spacy.tokens.Span]:
     """Given a document and a list of verbs and objects, return the verb phrase spans
     that match any combination of the verb and the object.
 
@@ -81,7 +83,7 @@ def find_ableist_language(
 
     # Match verbs in ableist verb list
     # TODO: this might be faster if we use a matcher object?
-    jd_verbs = utils.get_verbs(job_description_doc, return_lemma=False)
+    jd_verbs = utils.get_verbs(job_description_doc)
     matched_verbs = [verb for verb in jd_verbs if verb.lemma_ in ABLEIST_VERBS]
 
     # Match verb + object in ableist verb + object list
@@ -111,11 +113,13 @@ def main(job_description_file):
     for ableist_term in result:
         if isinstance(ableist_term, spacy.tokens.Span):
             print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.start}:{ableist_term.end}"
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | "
+                f"POSITION: {ableist_term.start}:{ableist_term.end}"
             )
         else:
             print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.i}"
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | "
+                f"POSITION: {ableist_term.i}"
             )
 
 

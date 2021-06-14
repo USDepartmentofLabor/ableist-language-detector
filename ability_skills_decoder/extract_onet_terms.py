@@ -1,14 +1,14 @@
 """Module with functions to extract ability vs. skills terms from ONET data."""
 
-from typing import Iterable, Tuple
 from collections import Counter
 from pathlib import Path
+from typing import Iterable, Tuple
+
 import click
 import pandas as pd
 import spacy
 
 from ability_skills_decoder import utils
-
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -88,9 +88,9 @@ def get_representative_terms(
     # TODO: Could refine by only retrieving verbs that occur at the start of the
     # description, i.e. only capture the main verb used in the skill/ability
     for doc in nlp.pipe(abilities_corpus):
-        abilities_verbs.extend(utils.get_verbs(doc))
+        abilities_verbs.extend([token.lemma_ for token in utils.get_verbs(doc)])
     for doc in nlp.pipe(skills_corpus):
-        skills_verbs.extend(utils.get_verbs(doc))
+        skills_verbs.extend([token.lemma_ for token in utils.get_verbs(doc)])
 
     # Get counts for each verb; will be useful for ranking later
     abilities_verbs_counter = Counter(abilities_verbs)
@@ -128,7 +128,7 @@ def get_objects_corpus(corpus: Iterable[str]) -> list:
     """
     noun_objects = []
     for doc in nlp.pipe(corpus):
-        noun_objects.extend(utils.get_objects(doc))
+        noun_objects.extend([token.lemma_ for token in utils.get_objects(doc)])
     return list(set(noun_objects))
 
 
@@ -148,7 +148,7 @@ def get_nouns_corpus(corpus: Iterable[str]) -> list:
     """
     nouns = []
     for doc in nlp.pipe(corpus):
-        nouns.extend(utils.get_nouns(doc))
+        nouns.extend([token.lemma_ for token in utils.get_nouns(doc)])
     return list(set(nouns))
 
 

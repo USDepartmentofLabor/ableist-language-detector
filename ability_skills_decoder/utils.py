@@ -1,6 +1,7 @@
 """Module with NLP utility functions."""
 
-from typing import List, Union
+from typing import List
+
 import spacy
 
 
@@ -40,73 +41,49 @@ def is_object(token: spacy.tokens.Token) -> bool:
     return False
 
 
-def get_verbs(
-    spacy_doc: spacy.tokens.Doc, return_lemma: bool = True
-) -> List[Union[str, spacy.tokens.Token]]:
+def get_verbs(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
     """Return a list of verb lemmas within a given document.
 
     Parameters
     ----------
     spacy_doc : spacy.tokens.Doc
         spaCy document to parse
-    return_lemma : bool, optional
-        If true, return the string lemmas instead of the spaCy token objects,
-        by default True
 
     Returns
     -------
-    List[Union[str, spacy.tokens.Token]]
-        A list of tokens or string lemmas
+    List[spacy.tokens.Token]]
+        A list of tokens
     """
-    verbs = [token for token in spacy_doc if is_verb(token)]
-    if return_lemma:
-        return [token.lemma_ for token in verbs]
-    return verbs
+    return [token for token in spacy_doc if is_verb(token)]
 
 
-def get_objects(
-    spacy_doc: spacy.tokens.Doc, return_lemma: bool = True
-) -> List[Union[str, spacy.tokens.Token]]:
+def get_objects(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
     """Return a list of noun objects within a given document.
 
     Parameters
     ----------
     spacy_doc : spacy.tokens.Doc
         spaCy document to parse
-    return_lemma : bool, optional
-        If true, return the string lemmas instead of the spaCy token objects,
-        by default True
 
     Returns
     -------
-    List[Union[str, spacy.tokens.Token]]
-        A list of tokens or string lemmas
+    List[spacy.tokens.Token]
+        A list of tokens
     """
-    noun_objects = [token for token in spacy_doc if is_object(token)]
-    if return_lemma:
-        return [token.lemma_ for token in noun_objects]
-    return noun_objects
+    return [token for token in spacy_doc if is_object(token)]
 
 
-def get_nouns(
-    spacy_doc: spacy.tokens.Doc, return_lemma: bool = True
-) -> List[Union[str, spacy.tokens.Token]]:
-    """Return a list of nouns within a given document.
+def get_nouns(spacy_doc: spacy.tokens.Doc) -> List[spacy.tokens.Token]:
+    """Return a list of noun tokens within a given document.
 
     Parameters
     ----------
     spacy_doc : spacy.tokens.Doc
         spaCy document to parse
-    return_lemma : bool, optional
-        If true, return the string lemmas instead of the spaCy token objects,
-        by default True
 
     Returns
     -------
-    List[Union[str, spacy.tokens.Token]]
-        A list of tokens or string lemmas
+    List[spacy.tokens.Token]
+        A list of tokens
     """
-    nouns = [token for token in spacy_doc if token.pos_ == "NOUN"]
-    if return_lemma:
-        return [token.lemma_ for token in nouns]
-    return nouns
+    return [token for token in spacy_doc if token.pos_ == "NOUN"]
