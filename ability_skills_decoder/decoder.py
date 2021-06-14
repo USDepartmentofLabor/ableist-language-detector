@@ -109,8 +109,14 @@ def main(job_description_file):
 
     result = find_ableist_language(job_description_text)
     for ableist_term in result:
-        # token position, token, lemma
-        print(ableist_term.i, ableist_term, ableist_term.lemma_)
+        if isinstance(ableist_term, spacy.tokens.Span):
+            print(
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.start}:{ableist_term.end}"
+            )
+        else:
+            print(
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.i}"
+            )
 
 
 if __name__ == "__main__":
