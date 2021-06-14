@@ -3,6 +3,7 @@
 """Tests for decoder functions."""
 
 import spacy
+
 from ability_skills_decoder import decoder
 
 nlp = spacy.load("en_core_web_sm")
