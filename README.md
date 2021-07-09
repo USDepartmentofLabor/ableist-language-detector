@@ -83,6 +83,3 @@ PHRASE: bend | LEMMA: bend | POSITION: 38
 PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11
 PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35
 ```
-
-## Data
-* [O*NET Content Model Reference](https://www.onetcenter.org/dictionary/25.2/text/content_model_reference.html)
