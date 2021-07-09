@@ -7,7 +7,7 @@ Tool to identify ableist language in job descriptions.
 
 **Why is this tool important?**
 
-Ableist language in job descriptions can cause people with disabilities to feel excluded from jobs that they are qualified for. This typically occurs when a description includes requirements that describe physical abilities or demands instead of the outcome of the task that must be accomplished. By identifying ableist language and suggesting alternatives, this tool will support more inclusive hiring practices.
+Ableist language in job descriptions can cause people with disabilities to feel excluded from jobs that they are qualified for. This typically occurs when a description references [*abilities*](https://www.onetonline.org/find/descriptor/browse/Abilities/) or enduring attributes of an individual that are unnecessary for the job or for which [accommodations](https://askjan.org/) can be proactively offered instead of focusing on developed [*skills*](https://www.onetonline.org/skills/) that can be acquired to succeed in the role. By identifying ableist language and suggesting alternatives, this tool will support more inclusive hiring practices.
 
 ## Installation
 
