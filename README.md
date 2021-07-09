@@ -40,7 +40,7 @@ pip install -r requirements_dev.txt
 
 ## Basic Usage
 
-To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `deocder.py` script:
+To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `decoder.py` script:
 
 ```
 python decoder.py -j /path/to/job_description.txt
