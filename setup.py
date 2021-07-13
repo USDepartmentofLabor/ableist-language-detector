@@ -41,15 +41,15 @@ setup(
     license="MIT license",
     long_description=readme + "\n\n" + history,
     include_package_data=True,
-    keywords="ability_skills_decoder",
-    name="ability_skills_decoder",
+    keywords="ableist_language_detector",
+    name="ableist_language_detector",
     packages=find_packages(
-        include=["ability_skills_decoder", "ability_skills_decoder.*"]
+        include=["ableist_language_detector", "ableist_language_detector.*"]
     ),
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,
-    url="https://github.com/dianalam/ability_skills_decoder",
+    url="https://github.com/dianalam/ableist_language_detector",
     version="0.1.0",
     zip_safe=False,
 )

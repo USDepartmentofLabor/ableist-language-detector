@@ -6,7 +6,7 @@ from typing import List, Union
 import click
 import spacy
 
-from ability_skills_decoder.ableist_word_list import ABLEIST_VERBS, AbleistLanguage
+from ableist_language_detector.ableist_word_list import ABLEIST_VERBS, AbleistLanguage
 
 nlp = spacy.load("en_core_web_sm")
 

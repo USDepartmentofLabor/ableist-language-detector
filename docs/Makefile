@@ -4,7 +4,7 @@
 # You can set these variables from the command line.
 SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
-SPHINXPROJ    = ability_skills_decoder
+SPHINXPROJ    = ableist_language_detector
 SOURCEDIR     = .
 BUILDDIR      = _build
 

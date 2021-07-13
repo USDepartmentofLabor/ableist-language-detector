@@ -1,4 +1,4 @@
-# [wip] ability-skills-decoder
+# [wip] ableist-language-detector
 Tool to identify ableist language in job descriptions.
 
 **What is ableist language?**
@@ -13,8 +13,8 @@ Ableist language in job descriptions can cause people with disabilities to feel 
 
 Clone the repo and install the package in edit mode (preferably in a virtual environment).
 ```
-git clone git@github.com:inclusive-ai/ability-skills-decoder.git
-cd ability-skills-decoder
+git clone git@github.com:inclusive-ai/ableist-language-detector.git
+cd ableist-language-detector
 pip install -e .
 ```
 
@@ -35,26 +35,26 @@ pip install -r requirements_dev.txt
 
 ## Features
 
-* [`extract_onet_terms.py`](ability_skills_decoder/extract_terms.py): Extract representative terms for abilities and skills from O*Net data. Used as a source for our ableist lexicon.
-* [`decoder.py`](ability_skills_decoder/decoder.py): Main module that identifies ableist language in a job description.
+* [`extract_onet_terms.py`](ableist_language_detector/extract_terms.py): Extract representative terms for abilities and skills from O*Net data. Used as a source for our ableist lexicon.
+* [`detector.py`](ableist_language_detector/detector.py): Main module that identifies ableist language in a job description.
 
 ## Basic Usage
 
-To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `decoder.py` script:
+To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `detector.py` script:
 
 ```
-python decoder.py -j /path/to/job_description.txt
+python detector.py -j /path/to/job_description.txt
 ```
 
 The script will print out any ableist language that was detected in the job description, along with the location of the language (index position in the text), the root form of the terms, suggested alternative verbs, and an example of how to use the alternative phrasing.
 
-The main functionality is also available as a function via `decoder.find_ableist_language()`. This function returns a collection of `AbleistLanguageMatch` objects, which contain the same information listed above as attributes.
+The main functionality is also available as a function via `detector.find_ableist_language()`. This function returns a collection of `AbleistLanguageMatch` objects, which contain the same information listed above as attributes.
 
 Example usage:
 
 ```python
 >>> import spacy
->>> from ability_skills_decoder import decoder
+>>> from ableist_language_detector import detector
 
 >>> sample_job_description = """
     requirements
@@ -64,7 +64,7 @@ Example usage:
     - excellent communication skills
     - move your wrists in circles and bend your arms
 """
->>> ableist_language = decoder.find_ableist_language(sample_job_description)
+>>> ableist_language = detector.find_ableist_language(sample_job_description)
 >>> print(ableist_language)
 [lifting, bend, move your hands, move your wrists]
 

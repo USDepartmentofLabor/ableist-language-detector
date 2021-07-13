@@ -8,7 +8,7 @@ import click
 import pandas as pd
 import spacy
 
-from ability_skills_decoder import utils
+from ableist_language_detector import utils
 
 nlp = spacy.load("en_core_web_sm")
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 
-"""Tests for decoder functions."""
+"""Tests for detector functions."""
 
 import spacy
 
-from ability_skills_decoder import decoder
-from ability_skills_decoder.ableist_word_list import AbleistLanguage
+from ableist_language_detector import detector
+from ableist_language_detector.ableist_word_list import AbleistLanguage
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -22,7 +22,7 @@ def test_match_dependent_ableist_verbs():
             objects=["hand", "foot"],
         )
     }
-    str_result = decoder.match_dependent_ableist_verbs(doc, ableist_verbs)[0].text
+    str_result = detector.match_dependent_ableist_verbs(doc, ableist_verbs)[0].text
     assert str_result == "move your hands"
 
 
@@ -42,7 +42,7 @@ def test_find_ableist_language():
     - excellent communication skills
     - move your wrists in circles and bend your arms
     """
-    matched_results = decoder.find_ableist_language(doc)
+    matched_results = detector.find_ableist_language(doc)
     str_matched_results = [phrase.text for phrase in matched_results]
     expected_results = ["move your hands", "lifting", "move your wrists", "bend"]
     assert sorted(str_matched_results) == sorted(expected_results)

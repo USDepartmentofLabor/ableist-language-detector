@@ -1,4 +1,4 @@
-"""Top-level package for ability-skills-decoder."""
+"""Top-level package for ableist-language-detector."""
 
 __author__ = """Diana Lam"""
 __email__ = "diana.lam@pif.gov"

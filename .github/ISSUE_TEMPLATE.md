@@ -1,4 +1,4 @@
-* ability-skills-decoder version:
+* ableist-language-detector version:
 * Python version:
 * Operating System:
 

@@ -1,4 +1,4 @@
-Welcome to ability-skills-decoder's documentation!
+Welcome to ableist-language-detector's documentation!
 ======================================
 
 .. toctree::

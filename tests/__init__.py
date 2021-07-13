@@ -1,1 +1,1 @@
-"""Unit test package for ability_skills_decoder."""
+"""Unit test package for ableist_language_detector."""

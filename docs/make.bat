@@ -9,7 +9,7 @@ if "%SPHINXBUILD%" == "" (
 )
 set SOURCEDIR=.
 set BUILDDIR=_build
-set SPHINXPROJ=ability_skills_decoder
+set SPHINXPROJ=ableist_language_detector
 
 if "%1" == "" goto help
 

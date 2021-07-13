@@ -2,6 +2,6 @@
 Usage
 =====
 
-To use ability-skills-decoder in a project::
+To use ableist-language-detector in a project::
 
-    import ability_skills_decoder
+    import ableist_language_detector
