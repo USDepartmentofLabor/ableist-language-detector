@@ -82,11 +82,17 @@ def print_results(result):
                 f"EXAMPLE: {ableist_term.data.example}\n"
             )
 >>> print_results(ableist_language)
+Found 4 instances of ableist language.
+
+Match #1
 PHRASE: lifting | LEMMA: lift | POSITION: 22:23 | ALTERNATIVES: ['move', 'install', 'operate', 'manage', 'put', 'place', 'transfer', 'transport'] | EXAMPLE: Transport boxes from shipping dock to truck
 
+Match #2
 PHRASE: bend | LEMMA: bend | POSITION: 38:39 | ALTERNATIVES: ['lower oneself', 'drop', 'move to', 'turn'] | EXAMPLE: Install new ethernet cables under floor rugs
 
+Match #3
 PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11 | ALTERNATIVES: ['observe', 'operate', 'transport', 'transfer', 'activate'] | EXAMPLE: Operates a machine using a lever
 
+Match #4
 PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35 | ALTERNATIVES: ['observe', 'operate', 'transport', 'transfer', 'activate'] | EXAMPLE: Operates a machine using a lever
 ```
