@@ -46,9 +46,11 @@ To identify ableist language in a job description, pass a `.txt` file containing
 python decoder.py -j /path/to/job_description.txt
 ```
 
-The script will print out any ableist language that was detected in the job description, along with the location of the language (index position in the text) and the root form of the terms.
+The script will print out any ableist language that was detected in the job description, along with the location of the language (index position in the text), the root form of the terms, suggested alternative verbs, and an example of how to use the alternative phrasing.
 
-The main functionality is also available as a function via `decoder.find_ableist_language()`:
+The main functionality is also available as a function via `decoder.find_ableist_language()`. This function returns a collection of `AbleistLanguageMatch` objects, which contain the same information listed above as attributes.
+
+Example usage:
 
 ```python
 >>> import spacy
@@ -63,23 +65,28 @@ The main functionality is also available as a function via `decoder.find_ableist
     - move your wrists in circles and bend your arms
 """
 >>> ableist_language = decoder.find_ableist_language(sample_job_description)
->>> print(albeist_language)
+>>> print(ableist_language)
 [lifting, bend, move your hands, move your wrists]
 
-# We can also access the location of the language in the text and its root form
-def print_results(results):
-    for ableist_term in results:
-        if isinstance(ableist_term, spacy.tokens.Span):
+# Accessing attributes
+def print_results(result):
+    """Convenience function to print attributes."""
+    print(f"Found {len(result)} instances of ableist language.\n")
+    if len(result) > 0:
+        for i, ableist_term in enumerate(result):
             print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.start}:{ableist_term.end}"
-            )
-        else:
-            print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | POSITION: {ableist_term.i}"
+                f"Match #{i+1}\n"
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma} | "
+                f"POSITION: {ableist_term.start}:{ableist_term.end} | "
+                f"ALTERNATIVES: {ableist_term.data.alternative_verbs} | "
+                f"EXAMPLE: {ableist_term.data.example}\n"
             )
 >>> print_results(ableist_language)
-PHRASE: lifting | LEMMA: lift | POSITION: 22
-PHRASE: bend | LEMMA: bend | POSITION: 38
-PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11
-PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35
+PHRASE: lifting | LEMMA: lift | POSITION: 22:23 | ALTERNATIVES: ['move', 'install', 'operate', 'manage', 'put', 'place', 'transfer', 'transport'] | EXAMPLE: Transport boxes from shipping dock to truck
+
+PHRASE: bend | LEMMA: bend | POSITION: 38:39 | ALTERNATIVES: ['lower oneself', 'drop', 'move to', 'turn'] | EXAMPLE: Install new ethernet cables under floor rugs
+
+PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11 | ALTERNATIVES: ['observe', 'operate', 'transport', 'transfer', 'activate'] | EXAMPLE: Operates a machine using a lever
+
+PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35 | ALTERNATIVES: ['observe', 'operate', 'transport', 'transfer', 'activate'] | EXAMPLE: Operates a machine using a lever
 ```

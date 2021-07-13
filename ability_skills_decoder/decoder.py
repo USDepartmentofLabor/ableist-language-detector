@@ -125,7 +125,7 @@ def find_ableist_language(
     job_description_text: str,
 ) -> List[AbleistLanguageMatch]:
     """For a given job description document, return a list of the matched ableist
-    verbs and verb phrases as spacy objects.
+    language phrases.
 
     Parameters
     ----------
@@ -142,7 +142,6 @@ def find_ableist_language(
     job_description_doc = nlp(job_description_text)
 
     matched_results = []
-    # List[AbleistLanguageMatch]
 
     # Match verbs in ableist verb list
     ableist_verbs_non_obj_dep = {
@@ -199,13 +198,16 @@ def main(job_description_file):
         job_description_text = jd_file.read()
 
     result = find_ableist_language(job_description_text)
-    for ableist_term in result:
-        print(
-            f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma} | "
-            f"POSITION: {ableist_term.start}:{ableist_term.end} | "
-            f"ALTERNATIVES: {ableist_term.data.alternative_verbs} | "
-            f"EXAMPLE: {ableist_term.data.example}"
-        )
+    print(f"Found {len(result)} instances of ableist language.\n")
+    if len(result) > 0:
+        for i, ableist_term in enumerate(result):
+            print(
+                f"Match #{i+1}\n"
+                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma} | "
+                f"POSITION: {ableist_term.start}:{ableist_term.end} | "
+                f"ALTERNATIVES: {ableist_term.data.alternative_verbs} | "
+                f"EXAMPLE: {ableist_term.data.example}\n"
+            )
 
 
 if __name__ == "__main__":
