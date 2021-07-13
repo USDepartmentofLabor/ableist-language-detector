@@ -1,69 +1,129 @@
 """Main module for identifying ableist language in job descriptions."""
 
-from typing import Iterable, List, Union
+from dataclasses import dataclass
+from typing import List, Union
 
 import click
 import spacy
 
-from ability_skills_decoder import utils
-from ability_skills_decoder.ableist_word_list import (
-    ABLEIST_OBJECTS,
-    ABLEIST_VERBS,
-    ABLEIST_VERBS_OBJECT_DEPENDENT,
-)
+from ability_skills_decoder.ableist_word_list import ABLEIST_VERBS, AbleistLanguage
 
 nlp = spacy.load("en_core_web_sm")
 
 
-def match_dependent_ableist_verbs(
+@dataclass
+class AbleistLanguageMatch:
+    """Dataclass to store match results and associated wordlist data."""
+
+    text: str
+    lemma: str
+    start: int
+    end: int
+    data: AbleistLanguage
+
+    def __repr__(self):
+        return self.text
+
+
+def match_ableist_verbs(
     spacy_doc: spacy.tokens.Doc,
-    ableist_verbs_object_dependent: Iterable[str],
-    ableist_objects: Iterable[str],
+    ableist_verbs: dict[str, AbleistLanguage],
 ) -> List[spacy.tokens.Span]:
-    """Given a document and a list of verbs and objects, return the verb phrase spans
-    that match any combination of the verb and the object.
+    """Given a document and a collection of ableist verb data objects, return the
+    doc spans that match any of the ableist verbs. Do not check for grammatical
+    objects.
 
     Parameters
     ----------
     spacy_doc : spacy.tokens.Doc
         spacy doc
-    ableist_verbs_object_dependent : Iterable[str]
-        List of verbs to search for
-    ableist_objects : Iterable[str]
-        List of objects to search for
+    ableist_verbs : dict[str, AbleistLanguage]
+        Collection of ableist verbs to search for, where the key is the string
+        representation of the verb and the value is the dataclass object containing
+        the verb's data
 
     Returns
     -------
-    Iterable[spacy.tokens.Span]
+    List[spacy.tokens.Span]
         Matched spans
     """
-    matched_phrases = []
-    # reference on parsing spacy dependency trees:
-    #  https://spacy.io/usage/linguistic-features#navigating
-    for token in spacy_doc:
-        # iterate through tokens in the doc and look for matched objects; if an object
-        # matches, check its head verb and see if it matches
-        if token.dep_ == "dobj" and token.lemma_ in ableist_objects:
-            if (
-                utils.is_verb(token.head)  # each object has a head verb
-                and token.head.lemma_ in ableist_verbs_object_dependent
-            ):
-                # if a match, return the full verb phrase.
-                # right_edge is the rightmost edge of the token's syntactic descendants
-                # could also get the head token's right edge via token.head.right_edge
-                # (i.e. the right edge of the verb phrase, but this may be too expansive
-                # and include modifiers that we don't need -
-                # "move your hands repeatedly" instead of "move your hands")
-                matched_phrase = spacy_doc[
-                    token.head.i : token.right_edge.i + 1
-                ]  # probably the best one to return the verb + object
-                matched_phrases.append(matched_phrase)
-    return matched_phrases
+    matcher = spacy.matcher.Matcher(nlp.vocab)
+    matcher.add(
+        "verb_rule",
+        [
+            [
+                {
+                    "LEMMA": {"IN": list(ableist_verbs.keys())},
+                    "POS": "VERB",
+                    "DEP": {"NOT_IN": ["aux", "auxpass", "neg"]},
+                },
+            ]
+        ],
+    )
+    verb_matches = [spacy_doc[start:end] for _, start, end in matcher(spacy_doc)]
+    return verb_matches
+
+
+def match_dependent_ableist_verbs(
+    spacy_doc: spacy.tokens.Doc,
+    ableist_verbs: dict[str, AbleistLanguage],
+    return_search_verbs: bool = False,
+) -> Union[List[spacy.tokens.Span], List[tuple[spacy.tokens.Span, spacy.tokens.Span]]]:
+    """Given a document and a collection of ableist verb data objects that are
+    dependent on the verb-object relationship, return the doc spans that match any of
+    the ableist verbs and their grammatical objects.
+
+    Parameters
+    ----------
+    spacy_doc : spacy.tokens.Doc
+        spacy doc
+    ableist_verbs : dict[str, AbleistLanguage]
+        Collection of ableist verbs to search for, where the key is the string
+        representation of the verb and the value is the dataclass object containing
+        the verb's data
+    return_search_verbs : bool, optional
+        If true, return a tuple where the first element is the original search term
+        and the second is the matched results. If false, return the matched results
+        only, by default False
+
+    Returns
+    -------
+    Union[List[spacy.tokens.Span], List[tuple[spacy.tokens.Span, spacy.tokens.Span]]]
+        Matched spans or tuple containing the search term and matched spans
+    """
+    matcher = spacy.matcher.DependencyMatcher(nlp.vocab)
+    dep_obj_pattern = []
+    for verb, verb_data in ableist_verbs.items():
+        # dependencymatcher docs: https://spacy.io/api/dependencymatcher
+        pattern = [
+            # pattern always starts with a "right_id" anchor, which is the verb
+            {"RIGHT_ID": f"anchor_{verb}", "RIGHT_ATTRS": {"LEMMA": verb}},
+            # match direct objects of the verb
+            {
+                "LEFT_ID": f"anchor_{verb}",
+                "REL_OP": ">",  # looks for the head relationship
+                "RIGHT_ID": f"{verb}_object",
+                "RIGHT_ATTRS": {"DEP": "dobj", "LEMMA": {"IN": verb_data.objects}},
+            },
+        ]
+        dep_obj_pattern.append(pattern)
+    matcher.add("dep_verb_rule", dep_obj_pattern)
+    # return the entire span from verb to object, which includes any interim modifiers
+    matches = matcher(spacy_doc)
+    if return_search_verbs:
+        return [
+            (spacy_doc[token_ids[0]], spacy_doc[min(token_ids) : max(token_ids) + 1])
+            for _, token_ids in matches
+        ]
+    else:
+        return [
+            spacy_doc[min(token_ids) : max(token_ids) + 1] for _, token_ids in matches
+        ]
 
 
 def find_ableist_language(
     job_description_text: str,
-) -> List[Union[spacy.tokens.Span, spacy.tokens.Token]]:
+) -> List[AbleistLanguageMatch]:
     """For a given job description document, return a list of the matched ableist
     verbs and verb phrases as spacy objects.
 
@@ -74,26 +134,55 @@ def find_ableist_language(
 
     Returns
     -------
-    List[Union[spacy.tokens.Span, spacy.tokens.Token]]
-        List of matched ableist verbs and verb phrases as spacy objects; each contains
-        data on the text form, lemma, and position of the verb/phrase in the document
+    List[AbleistLanguageMatch]
+        List of matched ableist language in the form of AbleistLanguageMatch dataclass
+        instances
     """
     # Read in jd and convert to spacy doc
     job_description_doc = nlp(job_description_text)
 
+    matched_results = []
+    # List[AbleistLanguageMatch]
+
     # Match verbs in ableist verb list
-    # TODO: this might be faster if we use a matcher object?
-    jd_verbs = utils.get_verbs(job_description_doc)
-    matched_verbs = [verb for verb in jd_verbs if verb.lemma_ in ABLEIST_VERBS]
+    ableist_verbs_non_obj_dep = {
+        verb: verb_data
+        for verb, verb_data in ABLEIST_VERBS.items()
+        if not verb_data.object_dependent
+    }
+    for match in match_ableist_verbs(job_description_doc, ableist_verbs_non_obj_dep):
+        matched_results.append(
+            AbleistLanguageMatch(
+                lemma=match.lemma_,
+                text=match.text,
+                start=match.start,
+                end=match.end,
+                data=ABLEIST_VERBS[match.lemma_],
+            )
+        )
 
-    # Match verb + object in ableist verb + object list
-    matched_verb_phrases = match_dependent_ableist_verbs(
-        job_description_doc, ABLEIST_VERBS_OBJECT_DEPENDENT, ABLEIST_OBJECTS
-    )
-
-    # Return the ableist tokens & spans
-    # TODO: look up suggested alternatives and return that as well?
-    return matched_verbs + matched_verb_phrases
+    # Match verbs that depend on objects, if present in the word list
+    # A little repetitive, but need to use the original search term to access the data
+    # in AbleistLanguage since these are phrases and not just exact matches
+    ableist_verbs_obj_dep = {
+        verb: verb_data
+        for verb, verb_data in ABLEIST_VERBS.items()
+        if verb_data.object_dependent
+    }
+    if len(ableist_verbs_obj_dep) > 0:
+        for search_verb, match in match_dependent_ableist_verbs(
+            job_description_doc, ableist_verbs_obj_dep, return_search_verbs=True
+        ):
+            matched_results.append(
+                AbleistLanguageMatch(
+                    lemma=match.lemma_,
+                    text=match.text,
+                    start=match.start,
+                    end=match.end,
+                    data=ABLEIST_VERBS[search_verb.lemma_],
+                )
+            )
+    return matched_results
 
 
 @click.command()
@@ -111,16 +200,12 @@ def main(job_description_file):
 
     result = find_ableist_language(job_description_text)
     for ableist_term in result:
-        if isinstance(ableist_term, spacy.tokens.Span):
-            print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | "
-                f"POSITION: {ableist_term.start}:{ableist_term.end}"
-            )
-        else:
-            print(
-                f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma_} | "
-                f"POSITION: {ableist_term.i}"
-            )
+        print(
+            f"PHRASE: {ableist_term} | LEMMA: {ableist_term.lemma} | "
+            f"POSITION: {ableist_term.start}:{ableist_term.end} | "
+            f"ALTERNATIVES: {ableist_term.data.alternative_verbs} | "
+            f"EXAMPLE: {ableist_term.data.example}"
+        )
 
 
 if __name__ == "__main__":

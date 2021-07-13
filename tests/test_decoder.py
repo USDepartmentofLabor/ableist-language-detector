@@ -5,6 +5,7 @@
 import spacy
 
 from ability_skills_decoder import decoder
+from ability_skills_decoder.ableist_word_list import AbleistLanguage
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -12,11 +13,16 @@ nlp = spacy.load("en_core_web_sm")
 def test_match_dependent_ableist_verbs():
     """Test verb phrase (dependent verb + object) matching."""
     doc = nlp("must be able to move your hands repeatedly")
-    ableist_verbs_object_dependent = {"move"}
-    ableist_objects = {"hand", "foot"}
-    str_result = decoder.match_dependent_ableist_verbs(
-        doc, ableist_verbs_object_dependent, ableist_objects
-    )[0].text
+    ableist_verbs = {
+        "move": AbleistLanguage(
+            verb="move",
+            object_dependent=True,
+            alternative_verbs=["alt", "verbs"],
+            example="",
+            objects=["hand", "foot"],
+        )
+    }
+    str_result = decoder.match_dependent_ableist_verbs(doc, ableist_verbs)[0].text
     assert str_result == "move your hands"
 
 
