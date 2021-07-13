@@ -7,7 +7,7 @@ Tool to identify ableist language in job descriptions.
 
 **Why is this tool important?**
 
-Ableist language in job descriptions can cause people with disabilities to feel excluded from jobs that they are qualified for. This typically occurs when a description includes requirements that describe physical abilities or demands instead of the outcome of the task that must be accomplished. By identifying ableist language and suggesting alternatives, this tool will support more inclusive hiring practices.
+Ableist language in job descriptions can cause people with disabilities to feel excluded from jobs that they are qualified for. This typically occurs when a description references [*abilities*](https://www.onetonline.org/find/descriptor/browse/Abilities/) or enduring attributes of an individual that are unnecessary for the job or for which [accommodations](https://askjan.org/) can be proactively offered instead of focusing on developed [*skills*](https://www.onetonline.org/skills/) that can be acquired to succeed in the role. By identifying ableist language and suggesting alternatives, this tool will support more inclusive hiring practices.
 
 ## Installation
 
@@ -40,7 +40,7 @@ pip install -r requirements_dev.txt
 
 ## Basic Usage
 
-To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `deocder.py` script:
+To identify ableist language in a job description, pass a `.txt` file containing the job description text to the `decoder.py` script:
 
 ```
 python decoder.py -j /path/to/job_description.txt
@@ -83,6 +83,3 @@ PHRASE: bend | LEMMA: bend | POSITION: 38
 PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11
 PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35
 ```
-
-## Data
-* [O*NET Content Model Reference](https://www.onetcenter.org/dictionary/25.2/text/content_model_reference.html)
