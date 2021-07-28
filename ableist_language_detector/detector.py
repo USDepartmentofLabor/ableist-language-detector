@@ -1,11 +1,12 @@
 """Main module for identifying ableist language in job descriptions."""
 
 from dataclasses import dataclass
-from typing import List, Union, Dict, Tuple
+from typing import List, Union
 
 import click
 import spacy
-from .ableist_word_list import ABLEIST_VERBS, AbleistLanguage
+
+from ableist_language_detector.ableist_word_list import ABLEIST_VERBS, AbleistLanguage
 
 nlp = spacy.load("en_core_web_sm")
 
@@ -26,7 +27,7 @@ class AbleistLanguageMatch:
 
 def match_ableist_verbs(
     spacy_doc: spacy.tokens.Doc,
-    ableist_verbs: Dict[str, AbleistLanguage],
+    ableist_verbs: dict[str, AbleistLanguage],
 ) -> List[spacy.tokens.Span]:
     """Given a document and a collection of ableist verb data objects, return the
     doc spans that match any of the ableist verbs. Do not check for grammatical
@@ -65,9 +66,9 @@ def match_ableist_verbs(
 
 def match_dependent_ableist_verbs(
     spacy_doc: spacy.tokens.Doc,
-    ableist_verbs: Dict[str, AbleistLanguage],
+    ableist_verbs: dict[str, AbleistLanguage],
     return_search_verbs: bool = False,
-) -> Union[List[spacy.tokens.Span], List[Tuple[spacy.tokens.Span, spacy.tokens.Span]]]:
+) -> Union[List[spacy.tokens.Span], List[tuple[spacy.tokens.Span, spacy.tokens.Span]]]:
     """Given a document and a collection of ableist verb data objects that are
     dependent on the verb-object relationship, return the doc spans that match any of
     the ableist verbs and their grammatical objects.
