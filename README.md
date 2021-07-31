@@ -13,7 +13,7 @@ Ableist language in job descriptions can cause people with disabilities to feel 
 
 Clone the repo and install the package in edit mode (preferably in a virtual environment).
 ```
-git clone git@github.com:inclusive-ai/ableist-language-detector.git
+git clone git@github.com:USDepartmentofLabor/ableist-language-detector.git
 cd ableist-language-detector
 pip install -e .
 ```
