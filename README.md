@@ -148,7 +148,7 @@ PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35 | ALTERNATIV
 
 ## Ableist Language Lexicon
 
-The tool checks for job descriptions against an ableist language lexicon. To view the language that's currently in our lexicon, see the [ableist_language_detector/ableist_word_list.csv](ableist_language_detector/ableist_word_list.csv) file. This lexicon is constantly evolving and we appreciate any feedback or requests for changes. To do so, please [open an issue](https://github.com/dianalam/ableist_language_detector/issues).
+The tool checks for job descriptions against an ableist language lexicon. To view the language that's currently in our lexicon, see the [ableist_language_detector/ableist_word_list.csv](ableist_language_detector/ableist_word_list.csv) file. This lexicon is constantly evolving and we appreciate any feedback or requests for changes. To do so, please [open an issue](https://github.com/USDepartmentofLabor/ableist-language-detector/issues).
 
 The lexicon was developed based on the following data sources in consultation with subject matter experts at DOL ODEP.
 
