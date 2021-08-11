@@ -13,6 +13,8 @@ Ableist language in job descriptions can cause people with disabilities to feel 
 
 ## Installation
 
+This package requires Python >= 3.8.
+
 Clone the repo and install the package (preferably in a virtual environment):
 ```
 git clone git@github.com:USDepartmentofLabor/ableist-language-detector.git
