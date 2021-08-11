@@ -105,7 +105,6 @@ The main functionality is also available directly via `detector.find_ableist_lan
 **Example usage:**
 
 ```python
->>> import spacy
 >>> from ableist_language_detector import detector
 
 >>> sample_job_description = """
