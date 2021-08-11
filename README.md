@@ -13,9 +13,10 @@ Ableist language in job descriptions can cause people with disabilities to feel 
 
 ## Installation
 
-Install the package:
+Clone the repo and install the package (preferably in a virtual environment):
 ```
-python -m pip install git+https://github.com/USDepartmentofLabor/ableist-language-detector.git
+git clone git@github.com:USDepartmentofLabor/ableist-language-detector.git
+python -m pip install ableist-language-detector/
 ```
 
 Download spaCy dependencies.

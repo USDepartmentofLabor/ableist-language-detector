@@ -2,6 +2,7 @@ include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
+include ableist_language_detector/ableist_word_list.csv
 
 recursive-include tests *
 recursive-exclude * __pycache__
