@@ -49,6 +49,8 @@ There are three ways to access the tool.
 
 To run a local instance of the tool as a web application, see the instructions in [this respository](https://github.com/lujamie/dol-web).
 
+![img](assets/ableist-ui-demo-fullsize.gif)
+
 ### 2. Command Line Tool
 
 The command line tool allows you to check a single job description for ableist language by passing a `.txt` file containing the job description text to the main `detector.py` script.
