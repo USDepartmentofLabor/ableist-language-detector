@@ -47,7 +47,7 @@ There are three ways to access the tool.
 
 ### 1. Web Application
 
-To run a local instance of the tool as a web application, see the instructions in [this respository](https://github.com/USDepartmentofLabor/21su-dol-web).
+To run a local instance of the tool as a web application, see the instructions in [this respository](https://github.com/USDepartmentofLabor/ableist-language-detector-web).
 
 ![img](assets/ableist-ui-demo-fullsize.gif)
 
