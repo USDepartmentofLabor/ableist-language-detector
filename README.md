@@ -49,7 +49,7 @@ There are three ways to access the tool.
 
 To run a local instance of the tool as a web application, see the instructions in [this respository](https://github.com/USDepartmentofLabor/ableist-language-detector-web).
 
-![img](assets/ableist-ui-demo-fullsize.gif)
+![img](assets/ableist-ui-demo.gif)
 
 ### 2. Command Line Tool
 
