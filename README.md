@@ -40,10 +40,12 @@ python -m pip install -r requirements_dev.txt
 
 * [`extract_onet_terms.py`](ableist_language_detector/extract_terms.py): Extract representative terms for abilities and skills from O*Net data. Used as one of our sources for our ableist lexicon.
 * [`detector.py`](ableist_language_detector/detector.py): Main module that identifies ableist language in a job description.
+* [`model_api.py`](ableist_language_detector/model_api.py): Creates custom mlflow model to serve detector for REST API access.
+
 
 ## Usage
 
-There are three ways to access the tool.
+There are four ways to access the tool.
 
 ### 1. Web Application
 
@@ -148,6 +150,44 @@ PHRASE: move your hands | LEMMA: move your hand | POSITION: 8:11 | ALTERNATIVES:
 
 Match #4
 PHRASE: move your wrists | LEMMA: move your wrist | POSITION: 32:35 | ALTERNATIVES: ['observe', 'operate', 'transport', 'transfer', 'activate'] | EXAMPLE: Operates a machine using a lever
+```
+
+### 4. Local or remote REST API acccess
+
+A custom MLflow model accessible via an API can be created with the `model_api.py` script.
+
+To build the model, which will create a local directory called `detector_model`, run:
+
+```
+python ableist_language_detector/model_api.py
+```
+
+You can optionally use the same script to run the MLflow detector model on an input job
+description file:
+
+```
+python ableist_language_detector/model_api.py \
+  --train_only False \
+  -j sample_job_descriptions/short_job_description.txt
+```
+
+Serve the model to port 1234 after making the following script executable:
+
+```
+ ./serveModel.sh detector_model
+```
+
+The model can now be used via a REST API and will return key value pairs
+of ableist term location and properties.
+The `predictAPI.sh` script contains an example curl command for using the model API.
+
+```
+>>>cat sample_job_descriptions/short_job_description.txt | predictAPI.sh
+
+{"21": {"lemma": "lift", "text": "lifting", "start": "21", "end": "22", "alternative_verbs": "['move', 'install', 'operate', 'manage', 'put', 'place', 'transfer', 'transport']", "example": "Transport boxes from shipping dock to truck"},
+"37": {"lemma": "bend", "text": "bend", "start": "37", "end": "38", "alternative_verbs": "['lower oneself', 'drop', 'move to', 'turn']", "example": "Install new ethernet cables under floor rugs"},
+"7": {"lemma": "move your hand", "text": "move your hands", "start": "7", "end": "10", "alternative_verbs": "['observe', 'operate', 'transport', 'transfer', 'activate']", "example": "Operates a machine using a lever"},
+"31": {"lemma": "move your wrist", "text": "move your wrists", "start": "31", "end": "34", "alternative_verbs": "['observe', 'operate', 'transport', 'transfer', 'activate']", "example": "Operates a machine using a lever"}}
 ```
 
 ## Ableist Language Lexicon

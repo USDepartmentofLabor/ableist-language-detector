@@ -1,3 +1,4 @@
 pandas==1.2.4
 click==7.1.2
 spacy==3.0.5
+mlflow==1.18.0
